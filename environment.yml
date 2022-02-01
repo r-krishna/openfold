@@ -1,4 +1,4 @@
-name: openfold_venv
+name: base
 channels:
   - conda-forge
   - bioconda
