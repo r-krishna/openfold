@@ -314,7 +314,7 @@ class AlphaFold(nn.Module):
         # Predict 3D structure
         outputs["sm"] = self.structure_module(
             s_hack,
-            z_hack,
+            z,
             feats["aatype"],
             mask=feats["seq_mask"],
         )
