@@ -308,11 +308,9 @@ class AlphaFold(nn.Module):
         outputs["single"] = s
         
         # Hacking OpenFold to input random vectors as the pair and single features
-        z_hack = torch.rand(z.shape)
-        s_hack = torch.rand(s.shape)
-        z_hack.to(device)
-        s_hack.to(device)
-        
+        z_hack = torch.rand(z.shape).to(device)
+        s_hack = torch.rand(s.shape).to(device)
+
         # Predict 3D structure
         outputs["sm"] = self.structure_module(
             s_hack,
