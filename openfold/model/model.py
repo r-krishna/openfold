@@ -294,16 +294,17 @@ class AlphaFold(nn.Module):
         # m: [*, S, N, C_m]
         # z: [*, N, N, C_z]
         # s: [*, N, C_s]
-        # m, z, s = self.evoformer(
-        #     m,
-        #     z,
-        #     msa_mask=msa_mask,
-        #     pair_mask=pair_mask,
-        #     chunk_size=self.globals.chunk_size,
-        #     _mask_trans=self.config._mask_trans,
-        # )
+        m, z, s = self.evoformer(
+            m,
+            z,
+            msa_mask=msa_mask,
+            pair_mask=pair_mask,
+            chunk_size=self.globals.chunk_size,
+            _mask_trans=self.config._mask_trans,
+        )
 
         # Hacking OpenFold to input random vectors as the pair and single features
+        m_hack = torch.rand(m.shape).cuda()
         z_hack = torch.rand(z.shape).cuda()
         s_hack = torch.rand(s.shape).cuda()
         seq_mask = torch.zeros(feats["aatype"].shape, dtype=torch.float32).cuda()
@@ -328,10 +329,10 @@ class AlphaFold(nn.Module):
         # Save embeddings for use during the next recycling iteration
 
         # [*, N, C_m]
-        m_1_prev = m[..., 0, :, :]
+        m_1_prev = m_hack[..., 0, :, :]
 
         # [*, N, N, C_z]
-        z_prev = z
+        z_prev = z_hack
 
         # [*, N, 3]
         x_prev = outputs["final_atom_positions"]
