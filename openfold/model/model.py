@@ -294,23 +294,23 @@ class AlphaFold(nn.Module):
         # m: [*, S, N, C_m]
         # z: [*, N, N, C_z]
         # s: [*, N, C_s]
-        m, z, s = self.evoformer(
-            m,
-            z,
-            msa_mask=msa_mask,
-            pair_mask=pair_mask,
-            chunk_size=self.globals.chunk_size,
-            _mask_trans=self.config._mask_trans,
-        )
+        # m, z, s = self.evoformer(
+        #     m,
+        #     z,
+        #     msa_mask=msa_mask,
+        #     pair_mask=pair_mask,
+        #     chunk_size=self.globals.chunk_size,
+        #     _mask_trans=self.config._mask_trans,
+        # )
 
-        outputs["msa"] = m[..., :n_seq, :, :]
-        outputs["pair"] = z
-        outputs["single"] = s
-        
         # Hacking OpenFold to input random vectors as the pair and single features
         z_hack = torch.rand(z.shape).cuda()
         s_hack = torch.rand(s.shape).cuda()
         seq_mask = torch.zeros(feats["aatype"].shape, dtype=torch.float32).cuda()
+
+        outputs["msa"] = m[..., :n_seq, :, :]
+        outputs["pair"] = z_hack
+        outputs["single"] = s_hack
 
         # Predict 3D structure
         outputs["sm"] = self.structure_module(
